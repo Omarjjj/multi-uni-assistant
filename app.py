@@ -12,6 +12,7 @@ import json
 import unicodedata # Import unicodedata for character filtering
 import re
 from pathlib import Path # Add Path
+import httpx # Import httpx
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -21,7 +22,28 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 # Configure API keys and environment
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# openai.api_key = os.getenv("OPENAI_API_KEY") # Will be set in the client
+
+# --- Explicitly configure httpx client and OpenAI client ---
+# Create an httpx client with proxies explicitly set to an empty dictionary
+explicit_no_proxy_sync_client = httpx.Client(proxies={})
+
+# Initialize OpenAI client with the custom httpx client and API key
+# Ensure OPENAI_API_KEY is loaded from environment
+openai_api_key_from_env = os.getenv("OPENAI_API_KEY")
+if not openai_api_key_from_env:
+    logger.error("OPENAI_API_KEY environment variable not found.")
+    # Potentially raise an error or handle as appropriate for your application startup
+    # For now, proceeding will likely cause errors later if key is truly missing.
+# Initialize the client, it will pick up the API key from the environment by default if not passed,
+# but we pass it explicitly for clarity and to ensure it's using the one we checked.
+# The http_client argument is used to pass our custom httpx client.
+client = openai.OpenAI(
+    api_key=openai_api_key_from_env,
+    http_client=explicit_no_proxy_sync_client
+)
+# --- End Explicit Configuration ---
+
 pinecone_api_key = os.getenv("PINECONE_API_KEY")
 pinecone_env = os.getenv("PINECONE_ENV")
 pinecone_index_name = os.getenv("PINECONE_INDEX")
@@ -70,7 +92,7 @@ majors_data = load_majors()
 AVAILABLE_PINECONE_NAMESPACES = set()
 # --- End Global ---
 
-if not all([openai.api_key, pinecone_api_key, pinecone_env, pinecone_index_name]):
+if not all([openai_api_key_from_env, pinecone_api_key, pinecone_env, pinecone_index_name]):
     logger.error("Missing required environment variables. Make sure you have set up the .env file correctly.")
 
 # --- Context Rewriting Prompt & Function ---

@@ -2,11 +2,12 @@ fastapi==0.109.0
 uvicorn==0.27.0
 openai==1.12.0
 python-dotenv==1.0.0
-pinecone>=2.0.0
+pinecone-client>=2.0.0
 pydantic==2.5.3
-starlette==0.35.0
+starlette==0.36.0
 python-multipart==0.0.6
 uuid==1.30
 numpy
 scikit-learn
-gunicorn==21.2.0 
+gunicorn==21.2.0
+httpx 

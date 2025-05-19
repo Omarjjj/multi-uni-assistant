@@ -12,7 +12,7 @@ import json
 import unicodedata # Import unicodedata for character filtering
 import re
 from pathlib import Path # Add Path
-import httpx # Import httpx
+# import httpx # No longer explicitly creating httpx.Client here
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -21,28 +21,23 @@ logger = logging.getLogger(__name__)
 # Load environment variables
 load_dotenv()
 
-# Configure API keys and environment
-# openai.api_key = os.getenv("OPENAI_API_KEY") # Will be set in the client
+# --- Attempt to disable proxies by clearing environment variables for httpx ---
+# Set proxy environment variables to empty strings before OpenAI client initialization
+# This tells httpx (used by OpenAI client) not to use any proxies.
+os.environ['HTTP_PROXY'] = ''
+os.environ['HTTPS_PROXY'] = ''
+os.environ['ALL_PROXY'] = '' # Also clear ALL_PROXY just in case
+logger.info("Attempted to clear HTTP_PROXY, HTTPS_PROXY, and ALL_PROXY environment variables.")
+# --- End Attempt to disable proxies ---
 
-# --- Explicitly configure httpx client and OpenAI client ---
-# Create an httpx client with proxies explicitly set to an empty dictionary
-explicit_no_proxy_sync_client = httpx.Client(proxies={})
-
-# Initialize OpenAI client with the custom httpx client and API key
-# Ensure OPENAI_API_KEY is loaded from environment
+# Configure API keys and OpenAI client
 openai_api_key_from_env = os.getenv("OPENAI_API_KEY")
 if not openai_api_key_from_env:
     logger.error("OPENAI_API_KEY environment variable not found.")
     # Potentially raise an error or handle as appropriate for your application startup
-    # For now, proceeding will likely cause errors later if key is truly missing.
-# Initialize the client, it will pick up the API key from the environment by default if not passed,
-# but we pass it explicitly for clarity and to ensure it's using the one we checked.
-# The http_client argument is used to pass our custom httpx client.
-client = openai.OpenAI(
-    api_key=openai_api_key_from_env,
-    http_client=explicit_no_proxy_sync_client
-)
-# --- End Explicit Configuration ---
+
+# Initialize the OpenAI client. It should now pick up the cleared proxy settings from the OS environment.
+client = openai.OpenAI(api_key=openai_api_key_from_env)
 
 pinecone_api_key = os.getenv("PINECONE_API_KEY")
 pinecone_env = os.getenv("PINECONE_ENV")

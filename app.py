@@ -12,6 +12,7 @@ import json
 import unicodedata # Import unicodedata for character filtering
 import re
 from pathlib import Path # Add Path
+import httpx # Added httpx import
 # import httpx # No longer explicitly creating httpx.Client here
 
 # Configure logging
@@ -36,8 +37,12 @@ if not openai_api_key_from_env:
     logger.error("OPENAI_API_KEY environment variable not found.")
     # Potentially raise an error or handle as appropriate for your application startup
 
-# Initialize the OpenAI client. It should now pick up the cleared proxy settings from the OS environment.
-client = openai.OpenAI(api_key=openai_api_key_from_env)
+# Initialize the OpenAI client with a custom httpx client to ensure no proxies are used
+explicit_http_client = httpx.Client(proxies=None)
+client = openai.OpenAI(
+    api_key=openai_api_key_from_env,
+    http_client=explicit_http_client
+)
 
 pinecone_api_key = os.getenv("PINECONE_API_KEY")
 pinecone_env = os.getenv("PINECONE_ENV")

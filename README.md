@@ -1,53 +1,58 @@
-# Multi-University Assistant Backend
+# 🎓 Multi-University Assistant Backend
 
-This is the backend service for the Multi-University Assistant, a chatbot that helps students find information about their universities.
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
 
-## Features
+A powerful conversational AI assistant for Palestinian universities, providing students with easy access to information about programs, fees, and admission requirements.
 
-- RESTful API built with FastAPI
-- University-specific knowledge retrieval from Pinecone vector database
-- Arabic language support with a Palestinian dialect persona
-- Session management for context-aware conversations
+## 🌟 Features
 
-## Setup
+- 💬 AI-powered conversations about university programs and courses
+- 📊 Detailed information on admission requirements and grade thresholds
+- 💰 Up-to-date data on tuition fees and credit hour costs
+- 🔍 Integration with OpenAI for natural language understanding
+- 📚 Vector search capabilities with Pinecone
+- 🌐 RESTful API for frontend integration
+- 🇵🇸 Support for Arabic language with Palestinian dialect
 
-1. Create a virtual environment:
-   ```bash
-   python -m venv .venv
-   ```
+## 🛠️ Tech Stack
 
-2. Activate the virtual environment:
-   - Windows: `.venv\Scripts\activate`
-   - Unix/MacOS: `source .venv/bin/activate`
+- **FastAPI** - High-performance web framework
+- **OpenAI API** - Advanced language model integration
+- **Pinecone** - Vector database for semantic search
+- **Python 3.9+** - Modern Python environment
 
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+## 🚀 Deployment
 
-4. Create a `.env` file with your credentials:
-   ```
-   OPENAI_API_KEY="your_openai_api_key"
-   PINECONE_API_KEY="your_pinecone_api_key"
-   PINECONE_ENV="us-east-1"
-   PINECONE_INDEX="multiassistant"
-   ```
+This backend is configured for one-click deployment on Render.com.
+For detailed deployment instructions, see [DEPLOY_TO_RENDER.md](DEPLOY_TO_RENDER.md).
 
-## Running the Server
-
-Start the development server:
+## 💻 Local Development
 
 ```bash
-uvicorn app:app --reload
+# 📦 Install dependencies
+pip install -r requirements.txt
+
+# 🔑 Set up environment variables (.env file)
+# OPENAI_API_KEY=your_key
+# PINECONE_API_KEY=your_key
+# PINECONE_ENV=your_env
+# PINECONE_INDEX=your_index
+
+# 🏃‍♂️ Run the server
+python run.py
 ```
 
-The API will be available at http://localhost:8000
+The server will start at http://localhost:8000
 
-## API Endpoints
+## 🔌 API Endpoints
 
 ### POST /ask
 
-Request body:
+Send questions to the university assistant:
+
 ```json
 {
   "session_id": "unique_session_id",
@@ -57,6 +62,7 @@ Request body:
 ```
 
 Response:
+
 ```json
 {
   "answer": "Assistant's response in Arabic"
@@ -66,17 +72,30 @@ Response:
 ### GET /health
 
 Health check endpoint that returns:
+
 ```json
 {
-  "status": "healthy"
+  "status": "healthy",
+  "pinecone": "connected",
+  "openai": "ready"
 }
 ```
 
-## Testing
+## 🧪 Testing
 
 Example curl command:
+
 ```bash
 curl -X POST localhost:8000/ask \
      -d '{"session_id":"s1","university":"aaup","message":"كم سعر ساعة البصريات؟"}' \
      -H "Content-Type: application/json"
-``` 
+```
+
+## 📋 Supported Universities
+
+- 🏛️ **AAUP** - Arab American University (الجامعة العربية الأمريكية)
+- 🏛️ **Birzeit** - Birzeit University (جامعة بيرزيت)
+- 🏛️ **PPU** - Palestine Polytechnic University (جامعة بوليتكنك فلسطين)
+- 🏛️ **An-Najah** - An-Najah National University (جامعة النجاح الوطنية)
+- 🏛️ **Bethlehem** - Bethlehem University (جامعة بيت لحم)
+- 🏛️ **AlQuds** - Al-Quds University (جامعة القدس) 

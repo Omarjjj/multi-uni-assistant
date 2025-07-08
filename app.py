@@ -743,13 +743,45 @@ SARA_PROMPT = (
     "   1.  **إذا الفرق بسيط (Near Miss):** زي معدل ناقص علامة أو علامتين. وضّحيله الشرط الرسمي (مثلاً 'المعدل المطلوب 65') بس بعدها ضيفي لمسة إنسانية، زي مثلاً: 'بصراحة، فرق علامة وحدة... مش عارفة إذا بمشوها أو لأ 💔. بحسها مش حجة كبيرة، بس القوانين قوانين مرات🤷‍♀️. الأحسن تتواصل مع قسم القبول والتسجيل بالجامعة نفسها {university_name} وتتأكد منهم مباشرة، بكون أفضل إشي عشان تاخد الجواب الأكيد'. (حافظي على الأمل والنصيحة بالتواصل)."
     "   2.  **إذا الفرق كبير (Far Miss):** زي معدل 60 وبدو طب (اللي بدو 85+). هنا كوني صريحة بس بطريقة ودية ومضحكة شوي. وضحي الشرط بجدية (مثلاً 'معدل الطب بدو فوق الـ 85') وبعدها علّقي عالفرق الكبير بضحكة خفيفة مع الـ skull emoji، زي مثلاً: 'ف انو معدلك 60 وبدك طب؟  💀 .او براه شو جد بتحكي . الفرق كبير بصراحة. يمكن تشوف تخصص تاني قريب أو بمجال تاني؟ في كتير شغلات حلوة كمان!'. (كوني واضحة انه صعب كتير بس بطريقة لطيفة ومضحكة 💀، واقترحي بدائل)."
     "*** End Handling Requirement Gaps ***"
-    "*** Comparison Offer Instruction (مهم جداً!) ***"
-    "عندما تقدمين معلومات عن **رسوم الساعات** لتخصص معين، وإذا قررتِ عرض مقارنة، يجب أن يبدأ هذا الجزء من ردكِ دائماً بـ: \n1. سطر يحتوي على الشرطات الثلاث \'---\' فقط (ليُعرض كخط فاصل أفقي).\n2. سطر فارغ بعده.\n3. ثم نص الاقتراح الذي يبدأ بـ \'🤔 على فكرة،...\'.\nمثال على بداية هذا الجزء: \'\n---\n\n🤔 على فكرة، إذا حابب، بقدر أعرضلك مقارنة لـ **اسم التخصص الذي تحدثتِ عنه للتو** بخصوص **الرسوم الدراسية (سعر الساعة)** مع باقي الجامعات اللي عنا. شو رأيك؟\'. تأكدي من استخدام النجمتين (**) للتأكيد على اسم التخصص ونوع المعلومة."
-
-    "وعندما تقدمين معلومات عن **معدلات القبول** لتخصص معين، وإذا قررتِ عرض مقارنة، يجب أن يبدأ هذا الجزء من ردكِ دائماً بـ: \n1. سطر يحتوي على الشرطات الثلاث \'---\' فقط (ليُعرض كخط فاصل أفقي).\n2. سطر فارغ بعده.\n3. ثم نص الاقتراح الذي يبدأ بـ \'🤔 على فكرة،...\'.\nمثال على بداية هذا الجزء: \'\n---\n\n🤔 على فكرة، إذا حابب، بقدر أعرضلك مقارنة لـ **اسم التخصص الذي تحدثتِ عنه للتو** بخصوص **شروط القبول (المعدل المطلوب)** مع باقي الجامعات اللي عنا. شو رأيك؟\'. تأكدي من استخدام النجمتين (**) للتأكيد على اسم التخصص ونوع المعلومة."
-
-    "ملاحظة: لا تعرضي مقارنة إذا لم يكن السؤال الأصلي عن رسوم أو معدلات قبول، أو إذا لم تتوفر لديك معلومات كافية عن التخصص المطلوب لتقديم إجابة أولية وافية."
-    "*** End Comparison Offer Instruction ***"
+    "*** Smart Comparison Offer System (مهم جداً!) ***"
+    "أنتِ تملكين القدرة على عرض مقارنات ذكية للطلاب، ولكن يجب أن تكوني انتقائية ومنطقية في عروضك."
+    
+    "**متى تعرضين مقارنة (استخدمي ذكاءك):**"
+    "1. **للرسوم الدراسية:** عندما يسأل الطالب عن سعر أو تكلفة أو رسوم تخصص أكاديمي محدد (مثل: 'كم سعر علم الحاسوب؟')"
+    "2. **لمعدلات القبول:** عندما يسأل عن معدل أو شروط قبول تخصص أكاديمي محدد (مثل: 'كم معدل الطب المطلوب؟')"
+    
+    "**متى لا تعرضين مقارنة (مهم!):**"
+    "- أسئلة عن خدمات الجامعة العامة (سكن، مرافق، نشاطات، مكتبة، مطاعم، مواصلات)"
+    "- أسئلة عن معلومات إدارية (مواعيد التسجيل، شروط عامة، إجراءات)"
+    "- أسئلة عامة عن الجامعة أو الحياة الطلابية"
+    "- أسئلة غير مرتبطة بتخصص أكاديمي محدد"
+    
+    "**كيف تقدمين العرض (تنسيق إجباري):**"
+    "عندما تقررين عرض مقارنة، استخدمي هذا التنسيق بالضبط:"
+    "```"
+    "---"
+    ""
+    "🤔 على فكرة، إذا حابب، بقدر أعرضلك مقارنة لـ **[اسم التخصص بالضبط]** بخصوص **[نوع المعلومة]** مع باقي الجامعات اللي عنا. شو رأيك؟"
+    "```"
+    
+    "**أنواع المعلومات المقبولة للمقارنة:**"
+    "- للرسوم: **الرسوم الدراسية (سعر الساعة)**"
+    "- للمعدلات: **شروط القبول (المعدل المطلوب)**"
+    
+    "**مثال صحيح:** سؤال 'كم سعر تخصص علم الحاسوب؟' → عرض مقارنة لـ **علم الحاسوب** بخصوص **الرسوم الدراسية (سعر الساعة)**"
+    "**مثال خاطئ:** سؤال 'شو في مرافق رياضية؟' → لا تعرضي مقارنة أبداً"
+    
+    "**تأكدي من:**"
+    "- اسم التخصص محاط بـ ** من الجهتين"
+    "- نوع المعلومة محاط بـ ** من الجهتين"
+    "- استخدام أحد النوعين المحددين بالضبط"
+    
+    "**Context Intelligence (مهم للذكاء!):**"
+    "- إذا رأيت في المعلومات قسم '--- الرسوم ---' فهذا يعني أن السؤال عن رسوم تخصص محدد"
+    "- إذا رأيت في المعلومات قسم '--- شروط القبول ---' فهذا يعني أن السؤال عن معدل قبول تخصص محدد"
+    "- إذا رأيت معلومات عن خدمات عامة، مرافق، أو إدارة فلا تعرضي مقارنة"
+    "- استخدمي ذكاءك لتحديد اسم التخصص الصحيح من عنوان المصدر [اسم المصدر]"
+    "*** End Smart Comparison Offer System ***"
     "شغلة مهمة كتير: لو لقيتي أي شي عن رسوم، سعر ساعة، أو معدل قبول (خصوصي لو بقسم '--- الرسوم ---' أو '--- شروط القبول ---')، "
     "ركزي عليها وجيبيها بالإجابة أول شي، هاي معلومات مهمة كتير للطالب. استخدمي المعلومات الإضافية بس لدعم هاي النقاط. "
     "كمان شغلة مهمة، إذا لقيتي رابط للمصدر (بيكون مكتوب 'الرابط: ...') مع المعلومة، يا ريت تذكريه كمان في جوابك عشان الطالب يقدر يشوف التفاصيل بنفسه. 👍"
@@ -1047,6 +1079,20 @@ async def ask(req: AskRequest):
         logger.info(f"Generating comparison table for {major_name_to_compare} - {info_type_to_compare}.")
         
         try:
+            # Validate comparison request before generating table
+            logger.info(f"🔍 USER REQUESTED COMPARISON: Major='{major_name_to_compare}', InfoType='{info_type_to_compare}'")
+            
+            # Ensure we have valid parameters
+            if not major_name_to_compare or not info_type_to_compare:
+                logger.error(f"❌ Invalid comparison parameters: Major='{major_name_to_compare}', InfoType='{info_type_to_compare}'")
+                raise ValueError("Invalid comparison parameters")
+            
+            # Double-check that info_type is one of the expected values
+            valid_info_types = ["الرسوم الدراسية (سعر الساعة)", "شروط القبول (المعدل المطلوب)"]
+            if info_type_to_compare not in valid_info_types:
+                logger.error(f"❌ Invalid info_type for comparison: '{info_type_to_compare}'. Expected one of: {valid_info_types}")
+                raise ValueError(f"Invalid info_type: {info_type_to_compare}")
+            
             comparison_table_md = generate_comparison_table_data(
                 major_name_to_compare,
                 info_type_to_compare,
@@ -1333,75 +1379,11 @@ async def ask(req: AskRequest):
                     final_context_parts.append("\n".join(context_parts))
                     logger.info(f"Adding {len(context_parts)} general context parts.")
 
-                # ---- Enhanced Identification for Comparison Offers ----
-                if matches and len(matches) > 0:
-                    # Check both standalone query and original query for query type
-                    query_lower = standalone_query.lower()
-                    original_query_lower = req.message.lower()
-                    
-                    # Comprehensive list of fee-related keywords in both English and Arabic
-                    fee_keywords = [
-                        # English terms
-                        "fee", "price", "cost", "tuition", "payment", "expense", "charge", "pay", "dollar", "usd", "nis", "jod",
-                        # Arabic terms
-                        "سعر", "تكلفة", "رسوم", "كلفة", "فلوس", "مصاري", "شيكل", "دينار", "قديش", "كم", "تسعيرة", "أجور", 
-                        "مبلغ", "تكاليف", "أقساط", "قسط", "₪", "دفع", "يكلف", "بكلف", "بتكلف", "تدفع", "ادفع"
-                    ]
-                    
-                    # Comprehensive list of admission-related keywords in both English and Arabic
-                    admission_keywords = [
-                        # English terms
-                        "admission", "average", "avg", "rate", "requirement", "score", "grade", "gpa", "minimum", "accept", "entry",
-                        "معدل", "قبول", "شروط", "متطلبات", "علامة", "درجة", "توجيهي", "ثانوية", "نسبة", "الحد الأدنى", "مطلوب",
-                        "تقبل", "يقبل", "بقبل", "بتقبل", "علامات", "نقاط", "نقطة", "تحصيل", "تحتاج", "محتاج", "بدي", "بحتاج"
-                    ]
-                    is_fee_query = any(term in query_lower for term in fee_keywords) or any(term in original_query_lower for term in fee_keywords)
-                    is_admission_query = any(term in query_lower for term in admission_keywords) or any(term in original_query_lower for term in admission_keywords)
-                    
-                    # Also check if fee or admission info was found in the context
-                    has_fee_info = bool(price_info)
-                    has_admission_info = bool(admission_info)
-                    
-                    # Determine query type for better major extraction
-                    query_type = None
-                    if is_fee_query or has_fee_info:
-                        query_type = "fee"
-                        identified_info_type_for_comparison = "الرسوم الدراسية (سعر الساعة)"
-                    elif is_admission_query or has_admission_info:
-                        query_type = "admission"
-                        identified_info_type_for_comparison = "شروط القبول (المعدل المطلوب)"
-                    
-                    if query_type:
-                        # Use enhanced major extraction instead of just first match
-                        potential_major_title = extract_most_relevant_major_from_matches(
-                            matches, 
-                            req.message,  # Use original query for major extraction
-                            query_type
-                        )
-                        
-                        if potential_major_title:
-                            identified_major_for_comparison = potential_major_title
-                            logger.info(f"Enhanced identification: {query_type} query for major: '{potential_major_title}'")
-                        else:
-                            logger.warning("Enhanced major extraction failed, falling back to first match")
-                            # Fallback to original logic
-                            first_match_metadata = matches[0].get('metadata', {}) if isinstance(matches[0], dict) else getattr(matches[0], 'metadata', {})
-                            if isinstance(first_match_metadata, str):
-                                try: first_match_metadata = json.loads(first_match_metadata)
-                                except: first_match_metadata = {}
-                            
-                            if isinstance(first_match_metadata, dict):
-                                identified_major_for_comparison = first_match_metadata.get('title')
-                
-                # ---- Set Comparable Context for Identified Comparisons ----
-                if identified_major_for_comparison and identified_info_type_for_comparison:
-                    # Set the comparable context for potential comparison offer
-                    mem["comparable_context"] = {
-                        "major_name": identified_major_for_comparison,
-                        "info_type": identified_info_type_for_comparison
-                    }
-                    logger.info(f"Set comparable_context for {identified_major_for_comparison} - {identified_info_type_for_comparison}")
-                # ---- End Set Comparable Context ----
+                # ---- Simplified: Let Sara Make Smart Decisions ----
+                # We simply reset comparable_context and let Sara's enhanced prompting
+                # handle when and how to offer comparisons intelligently
+                logger.info(f"🧠 SMART SYSTEM: Letting Sara make intelligent comparison decisions based on context")
+                # ---- End Simplified System ----
 
                 # Check if we actually have any context to show
                 if len(final_context_parts) > 0:
@@ -1529,18 +1511,11 @@ async def ask(req: AskRequest):
                 logger.info(f"Comparison offer parsed from LLM response: Major='{offered_major}', InfoType='{standardized_info_type}'. Context stored.")
             # If no offer is parsed, mem["comparable_context"] remains as it was (cleared at the start of the request)
 
-            # --- Post-processing: Ensure Comparison Offers Are Made When Appropriate ---
-            # If we have a comparable_context set (meaning we identified a comparison opportunity)
-            # but Sara didn't offer a comparison in her response, add the offer
-            if mem.get("comparable_context") and not offer_match:
-                major_name = mem["comparable_context"]["major_name"]
-                info_type = mem["comparable_context"]["info_type"]
-                
-                # Add comparison offer to Sara's response
-                comparison_offer = f"\n\n---\n\n🤔 على فكرة، إذا حابب، بقدر أعرضلك مقارنة لـ **{major_name}** بخصوص **{info_type}** مع باقي الجامعات اللي عنا. شو رأيك؟"
-                answer += comparison_offer
-                logger.info(f"Added missing comparison offer for {major_name} - {info_type}")
-            # --- End Post-processing ---
+            # --- Trust Sara's Intelligence ---
+            # Sara now makes all comparison decisions through her enhanced prompting
+            # No need for post-processing or forcing offers
+            logger.info(f"🧠 Trusting Sara's intelligent decision-making for comparison offers")
+            # --- End Trust Sara's Intelligence ---
 
             # Update memory with the answer
             mem["messages"].append({"role": "assistant", "content": answer})
@@ -1825,25 +1800,34 @@ def generate_comparison_table_data(major_name: str, info_type: str, all_universi
                             found_major_at_uni = True
                             logger.info(f"🔍 COMPARISON TABLE: Found '{major_title_in_data}' at {uni_id}")
 
-                            if "رسوم" in info_type or "سعر" in info_type:
+                            # Determine what type of comparison this is
+                            is_fee_comparison = "رسوم" in info_type or "سعر" in info_type
+                            is_admission_comparison = "قبول" in info_type or "معدل" in info_type
+                            
+                            logger.info(f"🔍 COMPARISON TABLE: Processing {uni_id} - Fee comparison: {is_fee_comparison}, Admission comparison: {is_admission_comparison}")
+
+                            if is_fee_comparison:
                                 if parsed_major.parsed_fee is not None:
                                     currency_str = f" {parsed_major.parsed_currency}" if parsed_major.parsed_currency else ""
                                     info_value = f"{parsed_major.parsed_fee}{currency_str}"
-                                    logger.info(f"🔍 COMPARISON TABLE: Fee for {uni_id}: {info_value}")
+                                    logger.info(f"🔍 COMPARISON TABLE: ✅ Fee for {uni_id}: {info_value}")
                                 else:
                                     info_value = "لم يتم تحديد الرسوم"
-                                    logger.warning(f"🔍 COMPARISON TABLE: No fee info for {uni_id}")
-                            elif "قبول" in info_type or "معدل" in info_type:
+                                    logger.warning(f"🔍 COMPARISON TABLE: ❌ No fee info for {uni_id}")
+                            elif is_admission_comparison:
                                 if parsed_major.parsed_min_avg is not None:
                                     info_value = f"{parsed_major.parsed_min_avg}%"
-                                    logger.info(f"🔍 COMPARISON TABLE: Min avg for {uni_id}: {info_value}")
+                                    logger.info(f"🔍 COMPARISON TABLE: ✅ Min avg for {uni_id}: {info_value}")
                                     if parsed_major.parsed_branches:
                                         notes = f"الأفرع: {', '.join(parsed_major.parsed_branches)}"
                                     else:
                                         notes = "لم تحدد الأفرع"
                                 else:
                                     info_value = "لم يحدد المعدل"
-                                    logger.warning(f"🔍 COMPARISON TABLE: No avg info for {uni_id}")
+                                    logger.warning(f"🔍 COMPARISON TABLE: ❌ No avg info for {uni_id}")
+                            else:
+                                logger.error(f"🔍 COMPARISON TABLE: ❌ Unknown comparison type for info_type: '{info_type}'")
+                                info_value = "نوع مقارنة غير معروف"
                             
                             # Highlight current university
                             if uni_id == current_university_id:
@@ -1938,106 +1922,11 @@ def normalize_major_name(major_title: str) -> str:
     
     return normalized
 
-def extract_most_relevant_major_from_matches(matches: List, query: str, query_type: str) -> Optional[str]:
-    """
-    Analyze multiple search results to find the most relevant major name.
-    Returns the best major name for comparison or None if not found.
-    """
-    if not matches:
-        return None
-    
-    logger.info(f"Analyzing {len(matches)} matches to find most relevant major for query: '{query}' (type: {query_type})")
-    
-    # Extract query keywords for matching
-    query_lower = query.lower()
-    query_keywords = set(query_lower.split())
-    
-    # Score each match based on relevance
-    scored_majors = []
-    
-    for i, match in enumerate(matches[:5]):  # Analyze top 5 matches only
-        try:
-            # Extract metadata
-            if isinstance(match, dict):
-                metadata = match.get('metadata', {})
-                score = match.get('score', 0.0)
-            else:
-                metadata = getattr(match, 'metadata', {})
-                score = getattr(match, 'score', 0.0)
-            
-            if isinstance(metadata, str):
-                try:
-                    metadata = json.loads(metadata)
-                except:
-                    continue
-            
-            if not isinstance(metadata, dict):
-                continue
-            
-            title = metadata.get('title', '')
-            keywords = metadata.get('keywords', [])
-            
-            if not title:
-                continue
-            
-            # Calculate relevance score
-            relevance_score = 0
-            
-            # 1. Pinecone similarity score (higher is better)
-            relevance_score += score * 10
-            
-            # 2. Title keyword overlap with query
-            title_words = set(title.lower().split())
-            title_overlap = len(title_words.intersection(query_keywords))
-            relevance_score += title_overlap * 5
-            
-            # 3. Keywords overlap with query
-            if isinstance(keywords, list):
-                keyword_words = set(' '.join(keywords).lower().split())
-                keyword_overlap = len(keyword_words.intersection(query_keywords))
-                relevance_score += keyword_overlap * 3
-            
-            # 4. Prefer matches that contain fee or admission info for respective queries
-            text_content = ""
-            if 'text' in metadata:
-                if isinstance(metadata['text'], list):
-                    text_content = ' '.join(metadata['text']).lower()
-                else:
-                    text_content = str(metadata['text']).lower()
-            
-            if query_type == "fee" and any(term in text_content for term in ['رسوم', 'سعر', 'fee', 'شيكل', 'دينار']):
-                relevance_score += 8
-            elif query_type == "admission" and any(term in text_content for term in ['معدل', 'قبول', 'admission', 'average']):
-                relevance_score += 8
-            
-            # 5. Boost if position is higher (lower index = higher boost)
-            position_boost = (5 - i) * 1.5
-            relevance_score += position_boost
-            
-            scored_majors.append({
-                'title': title,
-                'score': relevance_score,
-                'position': i,
-                'pinecone_score': score
-            })
-            
-            logger.info(f"Match {i}: '{title}' -> Relevance Score: {relevance_score:.2f} (Pinecone: {score:.4f})")
-            
-        except Exception as e:
-            logger.warning(f"Error processing match {i}: {e}")
-            continue
-    
-    if not scored_majors:
-        logger.warning("No valid majors found in matches")
-        return None
-    
-    # Sort by relevance score (highest first)
-    scored_majors.sort(key=lambda x: x['score'], reverse=True)
-    
-    best_major = scored_majors[0]
-    logger.info(f"Selected most relevant major: '{best_major['title']}' with score {best_major['score']:.2f}")
-    
-    return best_major['title']
+# --- Removed Complex Validation Functions ---
+# The old hardcoded validation functions have been removed in favor of
+# intelligent LLM-based decision making through enhanced prompting.
+# This makes the system more general and flexible.
+# --- End Removed Functions ---
 
 # --- End Enhanced Major Name Functions ---
 

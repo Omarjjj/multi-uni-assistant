@@ -1335,37 +1335,63 @@ async def ask(req: AskRequest):
 
                 # ---- Enhanced Identification for Comparison Offers ----
                 if matches and len(matches) > 0:
-                    first_match_metadata = matches[0].get('metadata', {}) if isinstance(matches[0], dict) else getattr(matches[0], 'metadata', {})
-                    if isinstance(first_match_metadata, str): # try to parse if string (shouldn't happen with current retrieve logic)
-                        try: first_match_metadata = json.loads(first_match_metadata)
-                        except: first_match_metadata = {}
+                    # Check both standalone query and original query for query type
+                    query_lower = standalone_query.lower()
+                    original_query_lower = req.message.lower()
                     
-                    if isinstance(first_match_metadata, dict):
-                        potential_major_title = first_match_metadata.get('title')
-                        if potential_major_title and isinstance(potential_major_title, str):
-                            # Enhanced heuristic to check if the query was about this major's fee or admission
-                            query_lower = standalone_query.lower()
-                            original_query_lower = req.message.lower()
+                    # Comprehensive list of fee-related keywords in both English and Arabic
+                    fee_keywords = [
+                        # English terms
+                        "fee", "price", "cost", "tuition", "payment", "expense", "charge", "pay", "dollar", "usd", "nis", "jod",
+                        # Arabic terms
+                        "سعر", "تكلفة", "رسوم", "كلفة", "فلوس", "مصاري", "شيكل", "دينار", "قديش", "كم", "تسعيرة", "أجور", 
+                        "مبلغ", "تكاليف", "أقساط", "قسط", "₪", "دفع", "يكلف", "بكلف", "بتكلف", "تدفع", "ادفع"
+                    ]
+                    
+                    # Comprehensive list of admission-related keywords in both English and Arabic
+                    admission_keywords = [
+                        # English terms
+                        "admission", "average", "avg", "rate", "requirement", "score", "grade", "gpa", "minimum", "accept", "entry",
+                        "معدل", "قبول", "شروط", "متطلبات", "علامة", "درجة", "توجيهي", "ثانوية", "نسبة", "الحد الأدنى", "مطلوب",
+                        "تقبل", "يقبل", "بقبل", "بتقبل", "علامات", "نقاط", "نقطة", "تحصيل", "تحتاج", "محتاج", "بدي", "بحتاج"
+                    ]
+                    is_fee_query = any(term in query_lower for term in fee_keywords) or any(term in original_query_lower for term in fee_keywords)
+                    is_admission_query = any(term in query_lower for term in admission_keywords) or any(term in original_query_lower for term in admission_keywords)
+                    
+                    # Also check if fee or admission info was found in the context
+                    has_fee_info = bool(price_info)
+                    has_admission_info = bool(admission_info)
+                    
+                    # Determine query type for better major extraction
+                    query_type = None
+                    if is_fee_query or has_fee_info:
+                        query_type = "fee"
+                        identified_info_type_for_comparison = "الرسوم الدراسية (سعر الساعة)"
+                    elif is_admission_query or has_admission_info:
+                        query_type = "admission"
+                        identified_info_type_for_comparison = "شروط القبول (المعدل المطلوب)"
+                    
+                    if query_type:
+                        # Use enhanced major extraction instead of just first match
+                        potential_major_title = extract_most_relevant_major_from_matches(
+                            matches, 
+                            req.message,  # Use original query for major extraction
+                            query_type
+                        )
+                        
+                        if potential_major_title:
+                            identified_major_for_comparison = potential_major_title
+                            logger.info(f"Enhanced identification: {query_type} query for major: '{potential_major_title}'")
+                        else:
+                            logger.warning("Enhanced major extraction failed, falling back to first match")
+                            # Fallback to original logic
+                            first_match_metadata = matches[0].get('metadata', {}) if isinstance(matches[0], dict) else getattr(matches[0], 'metadata', {})
+                            if isinstance(first_match_metadata, str):
+                                try: first_match_metadata = json.loads(first_match_metadata)
+                                except: first_match_metadata = {}
                             
-                            # Check both standalone query and original query
-                            fee_keywords = ["fee", "price", "cost", "سعر", "تكلفة", "رسوم", "كلفة", "فلوس", "مصاري", "شيكل", "دينار", "قديش", "كم"]
-                            admission_keywords = ["admission", "average", "avg", "rate", "معدل", "قبول", "شروط", "متطلبات", "علامة", "درجة", "توجيهي", "ثانوية"]
-                            
-                            is_fee_query = any(term in query_lower for term in fee_keywords) or any(term in original_query_lower for term in fee_keywords)
-                            is_admission_query = any(term in query_lower for term in admission_keywords) or any(term in original_query_lower for term in admission_keywords)
-                            
-                            # Also check if fee or admission info was found in the context
-                            has_fee_info = bool(price_info)
-                            has_admission_info = bool(admission_info)
-
-                            if is_fee_query or has_fee_info:
-                                identified_major_for_comparison = potential_major_title
-                                identified_info_type_for_comparison = "الرسوم الدراسية (سعر الساعة)"
-                                logger.info(f"Identified fee query for major: {potential_major_title} (Query: {is_fee_query}, HasInfo: {has_fee_info})")
-                            elif is_admission_query or has_admission_info:
-                                identified_major_for_comparison = potential_major_title
-                                identified_info_type_for_comparison = "شروط القبول (المعدل المطلوب)"
-                                logger.info(f"Identified admission query for major: {potential_major_title} (Query: {is_admission_query}, HasInfo: {has_admission_info})")
+                            if isinstance(first_match_metadata, dict):
+                                identified_major_for_comparison = first_match_metadata.get('title')
                 
                 # ---- Set Comparable Context for Identified Comparisons ----
                 if identified_major_for_comparison and identified_info_type_for_comparison:
@@ -1707,7 +1733,9 @@ async def generate_major_description(request: GenerateDescriptionRequest):
 # --- Generate Comparison Table Function ---
 def generate_comparison_table_data(major_name: str, info_type: str, all_university_ids: List[str], current_university_id: str) -> str:
     """Generates a Markdown table comparing a major's info across universities."""
-    logger.info(f"Generating comparison for Major: '{major_name}', Info: '{info_type}' across {len(all_university_ids)} unis.")
+    logger.info(f"🔍 COMPARISON TABLE: Generating comparison for Major: '{major_name}', Info: '{info_type}' across {len(all_university_ids)} unis.")
+    logger.info(f"🔍 COMPARISON TABLE: Normalized major name: '{normalize_major_name(major_name)}'")
+    logger.info(f"🔍 COMPARISON TABLE: Current university: {current_university_id}")
 
     if not majors_data:
         logger.error("Majors data not loaded, cannot generate comparison.")
@@ -1735,42 +1763,87 @@ def generate_comparison_table_data(major_name: str, info_type: str, all_universi
         try:
             for major_dict in majors_data:
                 if major_dict.get('university', '').lower() == uni_id.lower():
-                    # Enhanced title match (case-insensitive, substring)
-                    major_title_in_data = major_dict.get('title', '').lower().strip()
-                    query_major_name_lower = major_name.lower().strip()
+                    # Enhanced title match using normalization
+                    major_title_in_data = major_dict.get('title', '').strip()
                     
-                    # More flexible matching: check if major name is contained in title or vice versa
-                    # Also handle variations like "BSc Computer Science" vs "Computer Science"
-                    title_words = set(major_title_in_data.split())
-                    query_words = set(query_major_name_lower.split())
+                    # Normalize both the query major name and the data title for better matching
+                    normalized_query_major = normalize_major_name(major_name)
+                    normalized_data_title = normalize_major_name(major_title_in_data)
                     
-                    # Check for exact match, substring match, or significant word overlap
-                    is_match = (
-                        query_major_name_lower in major_title_in_data or 
-                        major_title_in_data in query_major_name_lower or
-                        len(title_words.intersection(query_words)) >= min(2, len(query_words))  # At least 2 words match or all query words
-                    )
+                    logger.debug(f"Comparing normalized: '{normalized_query_major}' vs '{normalized_data_title}'")
+                    
+                    # Check for various types of matches
+                    is_match = False
+                    
+                    # 1. Exact normalized match
+                    if normalized_query_major == normalized_data_title:
+                        is_match = True
+                        logger.debug(f"Exact normalized match found: {major_title_in_data}")
+                    
+                    # 2. Substring match (bidirectional)
+                    elif normalized_query_major in normalized_data_title or normalized_data_title in normalized_query_major:
+                        is_match = True
+                        logger.debug(f"Substring match found: {major_title_in_data}")
+                    
+                    # 3. Word overlap match (for complex titles)
+                    else:
+                        title_words = set(normalized_data_title.split())
+                        query_words = set(normalized_query_major.split())
+                        
+                        # Remove very common words for better matching
+                        common_words = {'science', 'studies', 'technology', 'and', 'of', 'in'}
+                        title_words_filtered = title_words - common_words
+                        query_words_filtered = query_words - common_words
+                        
+                        overlap = len(title_words_filtered.intersection(query_words_filtered))
+                        min_required_overlap = max(1, min(len(title_words_filtered), len(query_words_filtered)) // 2)
+                        
+                        if overlap >= min_required_overlap and overlap >= 1:
+                            is_match = True
+                            logger.debug(f"Word overlap match found: {major_title_in_data} (overlap: {overlap})")
+                    
+                    # 4. Original fallback matching for edge cases
+                    if not is_match:
+                        major_title_in_data_lower = major_title_in_data.lower().strip()
+                        query_major_name_lower = major_name.lower().strip()
+                        
+                        title_words = set(major_title_in_data_lower.split())
+                        query_words = set(query_major_name_lower.split())
+                        
+                        is_match = (
+                            query_major_name_lower in major_title_in_data_lower or 
+                            major_title_in_data_lower in query_major_name_lower or
+                            len(title_words.intersection(query_words)) >= min(2, len(query_words))
+                        )
+                        
+                        if is_match:
+                            logger.debug(f"Fallback match found: {major_title_in_data}")
                     
                     if is_match:
                         try:
                             parsed_major = parse_major_details(major_dict.copy())
                             found_major_at_uni = True
+                            logger.info(f"🔍 COMPARISON TABLE: Found '{major_title_in_data}' at {uni_id}")
 
                             if "رسوم" in info_type or "سعر" in info_type:
                                 if parsed_major.parsed_fee is not None:
                                     currency_str = f" {parsed_major.parsed_currency}" if parsed_major.parsed_currency else ""
                                     info_value = f"{parsed_major.parsed_fee}{currency_str}"
+                                    logger.info(f"🔍 COMPARISON TABLE: Fee for {uni_id}: {info_value}")
                                 else:
                                     info_value = "لم يتم تحديد الرسوم"
+                                    logger.warning(f"🔍 COMPARISON TABLE: No fee info for {uni_id}")
                             elif "قبول" in info_type or "معدل" in info_type:
                                 if parsed_major.parsed_min_avg is not None:
                                     info_value = f"{parsed_major.parsed_min_avg}%"
+                                    logger.info(f"🔍 COMPARISON TABLE: Min avg for {uni_id}: {info_value}")
                                     if parsed_major.parsed_branches:
                                         notes = f"الأفرع: {', '.join(parsed_major.parsed_branches)}"
                                     else:
                                         notes = "لم تحدد الأفرع"
                                 else:
                                     info_value = "لم يحدد المعدل"
+                                    logger.warning(f"🔍 COMPARISON TABLE: No avg info for {uni_id}")
                             
                             # Highlight current university
                             if uni_id == current_university_id:
@@ -1813,6 +1886,160 @@ def generate_comparison_table_data(major_name: str, info_type: str, all_universi
         logger.error(f"Error constructing comparison table: {table_error}")
         return "أعتذر، حدث خطأ أثناء إنشاء جدول المقارنة. الرجاء المحاولة مرة أخرى."
 # --- End Generate Comparison Table Function ---
+# --- Enhanced Major Name Normalization Function ---
+def normalize_major_name(major_title: str) -> str:
+    """Normalize major names for better matching across universities."""
+    if not major_title:
+        return ""
+    
+    # Convert to lowercase and strip
+    normalized = major_title.lower().strip()
+    
+    # Remove common prefixes and suffixes
+    prefixes_to_remove = [
+        'bsc', 'b.sc', 'bachelor of', 'bachelor in', 'bs', 'b.s',
+        'msc', 'm.sc', 'master of', 'master in', 'ms', 'm.s',
+        'phd', 'ph.d', 'doctor of', 'دكتوراه', 'ماجستير', 'بكالوريوس'
+    ]
+    
+    for prefix in prefixes_to_remove:
+        if normalized.startswith(prefix + ' '):
+            normalized = normalized[len(prefix):].strip()
+        elif normalized.startswith(prefix + '.'):
+            normalized = normalized[len(prefix)+1:].strip()
+    
+    # Remove common words that don't help with matching
+    words_to_remove = ['in', 'of', 'and', 'و', 'في', 'من', 'إلى']
+    words = normalized.split()
+    filtered_words = [w for w in words if w not in words_to_remove]
+    normalized = ' '.join(filtered_words)
+    
+    # Normalize common major name variations
+    major_synonyms = {
+        'computer science': ['علم الحاسوب', 'حاسوب', 'كمبيوتر', 'حوسبة', 'علوم حاسوب'],
+        'information technology': ['تكنولوجيا المعلومات', 'تقنية المعلومات', 'معلومات'],
+        'medicine': ['طب', 'طب عام', 'الطب'],
+        'nursing': ['تمريض', 'علوم التمريض'],
+        'pharmacy': ['صيدلة', 'علوم الصيدلة'],
+        'engineering': ['هندسة', 'الهندسة'],
+        'business administration': ['إدارة أعمال', 'إدارة الأعمال', 'أعمال'],
+        'accounting': ['محاسبة', 'علوم محاسبة'],
+        'law': ['قانون', 'حقوق', 'علوم قانونية'],
+        'education': ['تربية', 'علوم تربوية', 'تعليم']
+    }
+    
+    # Check if normalized name matches any synonym group
+    for canonical_name, synonyms in major_synonyms.items():
+        if normalized in synonyms or any(syn in normalized for syn in synonyms):
+            return canonical_name
+        # Check reverse - if canonical name is in the normalized text
+        if canonical_name in normalized:
+            return canonical_name
+    
+    return normalized
+
+def extract_most_relevant_major_from_matches(matches: List, query: str, query_type: str) -> Optional[str]:
+    """
+    Analyze multiple search results to find the most relevant major name.
+    Returns the best major name for comparison or None if not found.
+    """
+    if not matches:
+        return None
+    
+    logger.info(f"Analyzing {len(matches)} matches to find most relevant major for query: '{query}' (type: {query_type})")
+    
+    # Extract query keywords for matching
+    query_lower = query.lower()
+    query_keywords = set(query_lower.split())
+    
+    # Score each match based on relevance
+    scored_majors = []
+    
+    for i, match in enumerate(matches[:5]):  # Analyze top 5 matches only
+        try:
+            # Extract metadata
+            if isinstance(match, dict):
+                metadata = match.get('metadata', {})
+                score = match.get('score', 0.0)
+            else:
+                metadata = getattr(match, 'metadata', {})
+                score = getattr(match, 'score', 0.0)
+            
+            if isinstance(metadata, str):
+                try:
+                    metadata = json.loads(metadata)
+                except:
+                    continue
+            
+            if not isinstance(metadata, dict):
+                continue
+            
+            title = metadata.get('title', '')
+            keywords = metadata.get('keywords', [])
+            
+            if not title:
+                continue
+            
+            # Calculate relevance score
+            relevance_score = 0
+            
+            # 1. Pinecone similarity score (higher is better)
+            relevance_score += score * 10
+            
+            # 2. Title keyword overlap with query
+            title_words = set(title.lower().split())
+            title_overlap = len(title_words.intersection(query_keywords))
+            relevance_score += title_overlap * 5
+            
+            # 3. Keywords overlap with query
+            if isinstance(keywords, list):
+                keyword_words = set(' '.join(keywords).lower().split())
+                keyword_overlap = len(keyword_words.intersection(query_keywords))
+                relevance_score += keyword_overlap * 3
+            
+            # 4. Prefer matches that contain fee or admission info for respective queries
+            text_content = ""
+            if 'text' in metadata:
+                if isinstance(metadata['text'], list):
+                    text_content = ' '.join(metadata['text']).lower()
+                else:
+                    text_content = str(metadata['text']).lower()
+            
+            if query_type == "fee" and any(term in text_content for term in ['رسوم', 'سعر', 'fee', 'شيكل', 'دينار']):
+                relevance_score += 8
+            elif query_type == "admission" and any(term in text_content for term in ['معدل', 'قبول', 'admission', 'average']):
+                relevance_score += 8
+            
+            # 5. Boost if position is higher (lower index = higher boost)
+            position_boost = (5 - i) * 1.5
+            relevance_score += position_boost
+            
+            scored_majors.append({
+                'title': title,
+                'score': relevance_score,
+                'position': i,
+                'pinecone_score': score
+            })
+            
+            logger.info(f"Match {i}: '{title}' -> Relevance Score: {relevance_score:.2f} (Pinecone: {score:.4f})")
+            
+        except Exception as e:
+            logger.warning(f"Error processing match {i}: {e}")
+            continue
+    
+    if not scored_majors:
+        logger.warning("No valid majors found in matches")
+        return None
+    
+    # Sort by relevance score (highest first)
+    scored_majors.sort(key=lambda x: x['score'], reverse=True)
+    
+    best_major = scored_majors[0]
+    logger.info(f"Selected most relevant major: '{best_major['title']}' with score {best_major['score']:.2f}")
+    
+    return best_major['title']
+
+# --- End Enhanced Major Name Functions ---
 
 if __name__ == "__main__":
     import uvicorn
